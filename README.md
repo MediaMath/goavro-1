@@ -7,8 +7,8 @@ Goavro is a library that encodes and decodes Avro data.
 * Encodes to and decodes from both binary and textual JSON Avro data.
 * `Codec` is stateless and is safe to use by multiple goroutines.
 
-With the exception of features not yet supported, goavro attempts to
-be fully compliant with the most recent version of the
+With the exception of features not yet supported, goavro attempts to be
+fully compliant with the most recent version of the
 [Avro specification](http://avro.apache.org/docs/1.8.2/spec.html).
 
 ## Dependency Notice
