@@ -90,7 +90,10 @@ func newName(n, ns, ens string) (*name, error) {
 	}
 
 	// verify all components of the full name for adherence to Avro naming rules
-	for _, component := range strings.Split(nn.fullName, ".") {
+	for i, component := range strings.Split(nn.fullName, ".") {
+		if i == 0 && RelaxedNameValidation && component == "" {
+			continue
+		}
 		if err := checkNameComponent(component); err != nil {
 			return nil, err
 		}
@@ -98,6 +101,12 @@ func newName(n, ns, ens string) (*name, error) {
 
 	return &nn, nil
 }
+
+var (
+	// RelaxedNameValidation causes name validation to allow the first component
+	// of an Avro namespace to be the empty string.
+	RelaxedNameValidation bool
+)
 
 func newNameFromSchemaMap(enclosingNamespace string, schemaMap map[string]interface{}) (*name, error) {
 	var nameString, namespaceString string
@@ -116,6 +125,15 @@ func newNameFromSchemaMap(enclosingNamespace string, schemaMap map[string]interf
 		if !ok || namespaceString == nullNamespace {
 			return nil, fmt.Errorf("schema namespace, if provided, ought to be non-empty string; received: %T", namespace)
 		}
+		// NOTE: One of the steps of schema canonization is to prefix all names
+		// with their namespaces, removing all namespaces from the schema.
+		combined := namespaceString + "." + nameString
+		unescaped, err := unescapeUnicodeString(combined)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %q", err, combined)
+		}
+		schemaMap["name"] = unescaped
+		delete(schemaMap, "namespace")
 	}
 
 	return newName(nameString, namespaceString, enclosingNamespace)
