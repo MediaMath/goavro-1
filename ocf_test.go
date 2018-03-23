@@ -13,8 +13,6 @@ import (
 	"bytes"
 	"fmt"
 	"testing"
-
-	"github.com/linkedin/goavro"
 )
 
 // testOCFRoundTripWithHeaders has OCFWriter write to a buffer using specified
@@ -80,15 +78,6 @@ func testOCFRoundTripWithHeaders(t *testing.T, compressionName string, headers m
 			t.Errorf("GOT: %v; WANT: %v (%v)", actual, expected, k)
 		}
 	}
-
-	readMeta := ocfr.MetaData()
-	for k, v := range headers {
-		expected := fmt.Sprintf("%s", v)
-		actual := fmt.Sprintf("%s", readMeta[k])
-		if actual != expected {
-			t.Errorf("Actual: %v; Expected: %v (%v)", actual, expected, k)
-		}
-	}
 }
 
 func TestOCFWriterCompressionNull(t *testing.T) {
@@ -105,8 +94,4 @@ func TestOCFWriterCompressionSnappy(t *testing.T) {
 
 func TestOCFWriterWithApplicationMetaData(t *testing.T) {
 	testOCFRoundTripWithHeaders(t, CompressionNullLabel, map[string][]byte{"foo": []byte("BOING"), "goo": []byte("zoo")})
-}
-
-func TestOCFWriterWithApplicationMetaData(t *testing.T) {
-	testOCFRoundTripWithHeaders(t, goavro.CompressionNullLabel, map[string][]byte{"foo": []byte("BOING"), "goo": []byte("zoo")})
 }
