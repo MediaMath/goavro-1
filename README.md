@@ -7,9 +7,40 @@ Goavro is a library that encodes and decodes Avro data.
 * Encodes to and decodes from both binary and textual JSON Avro data.
 * `Codec` is stateless and is safe to use by multiple goroutines.
 
-With the exception of features not yet supported, goavro attempts to be
-fully compliant with the most recent version of the
-[Avro specification](http://avro.apache.org/docs/1.8.2/spec.html).
+With the exception of features not yet supported, goavro attempts to
+be fully compliant with the most recent version of the [Avro
+specification](http://avro.apache.org/docs/1.8.2/spec.html).
+
+## Use with Import Statement
+
+[The proposal to add package version support to the Go
+toolchain](https://github.com/golang/go/issues/24301) requires library
+authors to leave V1 code in the top level directory of the repository,
+and create a `v2` directory for V2 of the library.
+
+However this library was tagged with a `v2` release prior to that
+proposal, and V1 of this library is no longer at the top level of the
+repository. For a while this conflict prevented `go build` and `vgo
+build` from both being able to build a program that requires this
+library.
+
+Because of a [update to
+`vgo`](https://github.com/golang/go/issues/24099) that provides
+enhanced support for gopkg.in, now building projects that use either
+version agnostic *or* version aware Go build tools will work, provided
+this library is imported using its gopkg.in path.
+
+### To use V2 of this library:
+
+```Go
+import goavro "gopkg.in/linkedin/goavro.v2"
+```
+
+### To use V1 of this library:
+
+```Go
+import goavro "gopkg.in/linkedin/goavro.v1"
+```
 
 ## NOTICE
 
@@ -27,17 +58,6 @@ shortcomings:
 As a consequence of the rewrite, the API has been significantly
 simplified, taking into account suggestions from users received during
 the past few years since its original release.
-
-The original version of this library is still available, however the
-v1 branch does not support all the same features, has a number of
-outstanding bugs, and performs significantly slower than the v2
-branch. Users are highly encouraged to update their software to use
-the v2 branch, but until they do, they can continue to use the v1
-branch by modifying import statements:
-
-```Go
-import goavro "gopkg.in/linkedin/goavro.v1"
-```
 
 ### Justification for API Change
 
@@ -74,7 +94,7 @@ The new version of this library eliminates the `goavro.Record` type,
 and accepts a native Go map for all records to be encoded. Keys are
 the field names, and values are the field values. Nothing could be
 more easy. Conversely, decoding Avro data yields a native Go map for
-the upstream client to pull data back out out.
+the upstream client to pull data back out of.
 
 Furthermore, there is never a reason to ever have to break your schema
 down into record schemas. Merely feed the entire schema into the
@@ -264,16 +284,24 @@ native Go types and Avro encoded data.
 
 When translating from either binary or textual Avro to native Go data,
 goavro returns primitive Go data values for corresponding Avro data
-values. That is, a Go `nil` is returned for an Avro `null`; a Go
-`bool` for an Avro `boolean`; a Go `[]byte` for an Avro `bytes`; a Go
-`float32` for an Avro `float`, a Go `float64` for an Avro `double`; a
-Go `int64` for an Avro `long`; a Go `int32` for an Avro `int`; and a
-Go `string` for an Avro `string`.
+values. The table below shows how goavro translates Avro types to Go
+types.
 
-For complex Avro data types, a Go `[]interface{}` is returned for an
-Avro `array`; a Go `string` for an Avro `enum`; a Go `[]byte` for an
-Avro `fixed`; a Go `map[string]interface{}` for an Avro `map` and
-`record`.
+| Avro               | Go                       |
+| ------------------ | ------------------------ |
+| `null`             | `nil`                    |
+| `boolean`          | `bool`                   |
+| `bytes`            | `[]byte`                 |
+| `float`            | `float32`                |
+| `double`           | `float64`                |
+| `long`             | `int64`                  |
+| `int`              | `int32`                  |
+| `string`           | `string`                 |
+| `array`            | `[]interface{}`          |
+| `enum`             | `string`                 |
+| `fixed`            | `[]byte`                 |
+| `map` and `record` | `map[string]interface{}` |
+| `union`            | *see below*              |
 
 Because of encoding rules for Avro unions, when an union's value is
 `null`, a simple Go `nil` is returned. However when an union's value

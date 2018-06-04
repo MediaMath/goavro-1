@@ -15,6 +15,7 @@ import (
 
 func TestSchemaFixed(t *testing.T) {
 	testSchemaValid(t, `{"type": "fixed", "size": 16, "name": "md5"}`)
+	testSchemaValid(t, `{"type":"fixed","name":"f1","size":"16"}`)
 }
 
 func TestFixedName(t *testing.T) {
@@ -27,7 +28,6 @@ func TestFixedName(t *testing.T) {
 
 func TestFixedSize(t *testing.T) {
 	testSchemaInvalid(t, `{"type":"fixed","name":"f1"}`, `Fixed "f1" ought to have size key`)
-	testSchemaInvalid(t, `{"type":"fixed","name":"f1","size":"16"}`, `Fixed "f1" size ought to be number greater than zero`)
 	testSchemaInvalid(t, `{"type":"fixed","name":"f1","size":-1}`, `Fixed "f1" size ought to be number greater than zero`)
 	testSchemaInvalid(t, `{"type":"fixed","name":"f1","size":0}`, `Fixed "f1" size ought to be number greater than zero`)
 }
@@ -39,17 +39,17 @@ func TestFixedDecodeBufferUnderflow(t *testing.T) {
 func TestFixedDecodeWithExtra(t *testing.T) {
 	c, err := NewCodec(`{"type":"fixed","name":"foo","size":4}`)
 	if err != nil {
-		t.Errorf("Actual: %#v; Expected: %#v", err, nil)
+		t.Errorf("GOT: %#v; WANT: %#v", err, nil)
 	}
 	val, buf, err := c.NativeFromBinary([]byte("abcdefgh"))
 	if actual, expected := string(val.([]byte)), "abcd"; actual != expected {
-		t.Errorf("Actual: %#v; Expected: %#v", actual, expected)
+		t.Errorf("GOT: %#v; WANT: %#v", actual, expected)
 	}
 	if actual, expected := string(buf), "efgh"; actual != expected {
-		t.Errorf("Actual: %#v; Expected: %#v", actual, expected)
+		t.Errorf("GOT: %#v; WANT: %#v", actual, expected)
 	}
 	if err != nil {
-		t.Errorf("Actual: %#v; Expected: %#v", err, nil)
+		t.Errorf("GOT: %#v; WANT: %#v", err, nil)
 	}
 }
 

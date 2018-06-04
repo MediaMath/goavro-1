@@ -49,15 +49,29 @@ func benchmarkLowAndHigh(b *testing.B, callback func()) {
 	})
 }
 
+func ensureEqual(t *testing.T, actual, expected interface{}) {
+	if actual != expected {
+		_, file, line, ok := runtime.Caller(1)
+		if !ok {
+			t.Errorf("Actual: %#v; Expected: %#v", actual, expected)
+		} else {
+			if index := strings.LastIndex(file, "/"); index != -1 {
+				file = file[index+1:]
+			}
+			t.Errorf("Actual: %#v; Expected: %#v; %s:%d", actual, expected, file, line)
+		}
+	}
+}
+
 // ensure code under test returns error containing specified string
 func ensureError(tb testing.TB, err error, contains ...string) {
 	if err == nil {
-		tb.Errorf("Actual: %v; Expected: %#v", err, contains)
+		tb.Errorf("GOT: %v; WANT: %#v", err, contains)
 		return
 	}
 	for _, stub := range contains {
 		if !strings.Contains(err.Error(), stub) {
-			tb.Errorf("Actual: %v; Expected: %#v", err, contains)
+			tb.Errorf("GOT: %v; WANT: %#v", err, contains)
 		}
 	}
 }

@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/linkedin/goavro"
+	"github.com/MediaMath/goavro.v2"
 )
 
 func bail(err error) {

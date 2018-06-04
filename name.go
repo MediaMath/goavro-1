@@ -90,7 +90,10 @@ func newName(n, ns, ens string) (*name, error) {
 	}
 
 	// verify all components of the full name for adherence to Avro naming rules
-	for _, component := range strings.Split(nn.fullName, ".") {
+	for i, component := range strings.Split(nn.fullName, ".") {
+		if i == 0 && RelaxedNameValidation && component == "" {
+			continue
+		}
 		if err := checkNameComponent(component); err != nil {
 			return nil, err
 		}
@@ -98,6 +101,12 @@ func newName(n, ns, ens string) (*name, error) {
 
 	return &nn, nil
 }
+
+var (
+	// RelaxedNameValidation causes name validation to allow the first component
+	// of an Avro namespace to be the empty string.
+	RelaxedNameValidation bool
+)
 
 func newNameFromSchemaMap(enclosingNamespace string, schemaMap map[string]interface{}) (*name, error) {
 	var nameString, namespaceString string
@@ -108,13 +117,12 @@ func newNameFromSchemaMap(enclosingNamespace string, schemaMap map[string]interf
 	}
 	nameString, ok = name.(string)
 	if !ok || nameString == nullNamespace {
-		return nil, fmt.Errorf("schema name ought to be non-empty string; received: %T", name)
+		return nil, fmt.Errorf("schema name ought to be non-empty string; received: %T: %v", name, name)
 	}
-	namespace, ok := schemaMap["namespace"]
-	if ok {
+	if namespace, ok := schemaMap["namespace"]; ok {
 		namespaceString, ok = namespace.(string)
 		if !ok || namespaceString == nullNamespace {
-			return nil, fmt.Errorf("schema namespace, if provided, ought to be non-empty string; received: %T", namespace)
+			return nil, fmt.Errorf("schema namespace, if provided, ought to be non-empty string; received: %T: %v", namespace, namespace)
 		}
 	}
 
