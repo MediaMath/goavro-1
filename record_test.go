@@ -406,6 +406,10 @@ func TestRecordFieldUnionInvalidDefaultValue(t *testing.T) {
 		"default value ought to encode using field schema")
 }
 
+func TestRecordFieldFixedDefaultValue(t *testing.T) {
+	testSchemaValid(t, `{"type": "record", "name": "r1", "fields":[{"name": "f1", "type": {"type": "fixed", "name": "fix", "size": 1}, "default": "\u0001"}]}`)
+}
+
 func TestRecordRecursiveRoundTrip(t *testing.T) {
 	codec, err := NewCodec(`
 {
