@@ -6,7 +6,7 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/linkedin/goavro"
+	"github.com/MediaMath/goavro.v2"
 )
 
 var (
