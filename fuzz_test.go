@@ -381,7 +381,6 @@ func TestCrashers_OCF_e2e(t *testing.T) {
 			"\"\xa0 $\xf2\xe6\xec\xa27^\xfbܷ\xde\xfe\xc8\x13߹\xf3" +
 			"\xd5/\xff\x0f\x90\xfb\x1eO%\x06%B\x03\x00s\x0f(\x89\x02\a",
 	}
-
 	for testName, f := range crashers {
 		ensureNoPanic(t, testName, func() {
 			// TODO: replace this with a call out to the e2e Fuzz function
@@ -394,7 +393,7 @@ func TestCrashers_OCF_e2e(t *testing.T) {
 
 			var datums []interface{}
 			for ocfr.Scan() {
-				if datum, err := ocfr.Read(); err == nil {
+				if datum, _, err := ocfr.Read(); err == nil {
 					datums = append(datums, datum)
 				}
 			}

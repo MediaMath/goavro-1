@@ -208,7 +208,7 @@ func TestOCFWriterAppendSomeItemsToNothing(t *testing.T) {
 
 	var values []int64
 	for ocfr.Scan() {
-		value, err := ocfr.Read()
+		value, _, err := ocfr.Read()
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -269,7 +269,7 @@ func TestOCFWriterAppendSomeItemsToSomeItems(t *testing.T) {
 
 	var values []int64
 	for ocfr.Scan() {
-		value, err := ocfr.Read()
+		value, _, err := ocfr.Read()
 		if err != nil {
 			t.Fatal(err)
 		}

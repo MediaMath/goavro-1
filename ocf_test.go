@@ -50,7 +50,7 @@ func testOCFRoundTripWithHeaders(t *testing.T, compressionName string, headers m
 
 	var valuesRead []int64
 	for ocfr.Scan() {
-		value, err := ocfr.Read()
+		value, _, err := ocfr.Read()
 		if err != nil {
 			t.Fatal(err)
 		}
