@@ -117,6 +117,21 @@ func (ocfr *OCFReader) Read() (interface{}, error) {
 	return datum, nil
 }
 
+// ReadBinary simply returns the []byte rather than calling NativeFromBinary
+func (ocfr *OCFReader) ReadBinary() ([]byte, error) {
+	// NOTE: Test previous error before testing readReady to prevent overwriting
+	// previous error.
+	if ocfr.rerr != nil {
+		return nil, ocfr.rerr
+	}
+	if !ocfr.readReady {
+		ocfr.rerr = errors.New("Read called without successful Scan")
+		return nil, ocfr.rerr
+	}
+
+	return ocfr.block, nil
+}
+
 // RemainingBlockItems returns the number of items remaining in the block being
 // processed.
 func (ocfr *OCFReader) RemainingBlockItems() int64 {
