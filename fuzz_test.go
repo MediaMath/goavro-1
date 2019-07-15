@@ -392,7 +392,7 @@ func TestCrashers_OCF_e2e(t *testing.T) {
 
 		var datums []interface{}
 		for ocfr.Scan() {
-			if datum, err := ocfr.Read(); err == nil {
+			if datum, _, err := ocfr.Read(); err == nil {
 				datums = append(datums, datum)
 			}
 		}
