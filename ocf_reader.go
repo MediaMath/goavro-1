@@ -94,15 +94,15 @@ func (ocfr *OCFReader) Err() error {
 // Read consumes one datum value from the Avro OCF stream and returns it. Read
 // is designed to be called only once after each invocation of the Scan method.
 // See `NewOCFReader` documentation for an example.
-func (ocfr *OCFReader) Read() (interface{}, error) {
+func (ocfr *OCFReader) Read() (interface{}, []byte, error) {
 	// NOTE: Test previous error before testing readReady to prevent overwriting
 	// previous error.
 	if ocfr.rerr != nil {
-		return nil, ocfr.rerr
+		return nil, nil, ocfr.rerr
 	}
 	if !ocfr.readReady {
 		ocfr.rerr = errors.New("Read called without successful Scan")
-		return nil, ocfr.rerr
+		return nil, nil, ocfr.rerr
 	}
 	ocfr.readReady = false
 
@@ -110,11 +110,11 @@ func (ocfr *OCFReader) Read() (interface{}, error) {
 	var datum interface{}
 	datum, ocfr.block, ocfr.rerr = ocfr.header.codec.NativeFromBinary(ocfr.block)
 	if ocfr.rerr != nil {
-		return false, ocfr.rerr
+		return false, ocfr.block, ocfr.rerr
 	}
 	ocfr.remainingBlockItems--
 
-	return datum, nil
+	return datum, ocfr.block, nil
 }
 
 // RemainingBlockItems returns the number of items remaining in the block being

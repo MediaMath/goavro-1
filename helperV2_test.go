@@ -30,7 +30,7 @@ func nativeFromAvroUsingV2(tb testing.TB, avroBlob []byte) ([]interface{}, *Code
 
 	var nativeData []interface{}
 	for ocf.Scan() {
-		datum, err := ocf.Read()
+		datum, _, err := ocf.Read()
 		if err != nil {
 			break // Read error sets OCFReader error
 		}
