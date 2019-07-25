@@ -74,7 +74,7 @@ func dumpFromReader(ior io.Reader) error {
 	go textualFromNative(codec, data, finishedOutput)
 
 	for ocf.Scan() {
-		datum, err := ocf.Read()
+		datum, _, err := ocf.Read()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s\n", err)
 			continue

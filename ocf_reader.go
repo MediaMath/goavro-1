@@ -106,6 +106,8 @@ func (ocfr *OCFReader) Read() (interface{}, []byte, error) {
 	}
 	ocfr.readReady = false
 
+	var binaryRecord = ocfr.block
+
 	// decode one datum value from block
 	var datum interface{}
 	datum, ocfr.block, ocfr.rerr = ocfr.header.codec.NativeFromBinary(ocfr.block)
@@ -114,7 +116,7 @@ func (ocfr *OCFReader) Read() (interface{}, []byte, error) {
 	}
 	ocfr.remainingBlockItems--
 
-	return datum, ocfr.block, nil
+	return datum, binaryRecord, nil
 }
 
 // RemainingBlockItems returns the number of items remaining in the block being

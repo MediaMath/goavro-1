@@ -85,7 +85,7 @@ func headerFromReader(ior io.Reader, prefix string) error {
 	var decoded, errors int
 
 	for ocfr.Scan() {
-		_, err := ocfr.Read()
+		_, _, err := ocfr.Read()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s\n", err)
 			errors++
