@@ -177,7 +177,7 @@ func transcode(from *goavro.OCFReader, to *goavro.OCFWriter) error {
 	}
 
 	for from.Scan() {
-		datum, err := from.Read()
+		datum, _, err := from.Read()
 		if err != nil {
 			break
 		}
