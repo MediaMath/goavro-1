@@ -49,12 +49,18 @@ func testOCFRoundTripWithHeaders(t *testing.T, compressionName string, headers m
 	}
 
 	var valuesRead []int64
+	var expectedLenghts = []int{5, 4, 3, 2}
+	var i = 0
 	for ocfr.Scan() {
-		value, _, err := ocfr.Read()
+		value, binaryValue, err := ocfr.Read()
 		if err != nil {
 			t.Fatal(err)
 		}
+		if len(binaryValue) != expectedLenghts[i] {
+			t.Error("got zero length binary value")
+		}
 		valuesRead = append(valuesRead, value.(int64))
+		i++
 	}
 
 	if err = ocfr.Err(); err != nil {
