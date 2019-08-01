@@ -173,7 +173,8 @@ goavro `Codec` instances to encode or decode data.
 ## Usage
 
 Documentation is available via
-[![GoDoc](https://godoc.org/github.com/linkedin/goavro?status.svg)](https://godoc.org/github.com/linkedin/goavro).
+[![GoDoc](https://godoc.org/github.com/linkedin/goavro?status.svg)](https://godoc.org/github.com/linkedin/goavro)[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMediaMath%2Fgoavro.v2.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FMediaMath%2Fgoavro.v2?ref=badge_shield)
+.
 
 ```Go
 package main
@@ -393,6 +394,9 @@ purposes. Their initial default values are (`math.MaxInt32` or
 ~2.2GB).
 
 ## License
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FMediaMath%2Fgoavro.v2.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FMediaMath%2Fgoavro.v2?ref=badge_large)
 
 ### Goavro license
 
